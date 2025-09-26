@@ -24,7 +24,6 @@ The visualize module requires the following additional packages:
 
 - `folium>=0.15.0` - For interactive web maps
 - `pydeck>=0.9.0` - For advanced 3D visualizations
-- `matplotlib` - For static map generation
 
 ## Data Sources Supported
 
