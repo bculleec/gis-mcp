@@ -48,6 +48,14 @@ except ImportError as e:
     import logging
     logging.warning(f"land_cover module could not be imported: {e}. Install with 'pip install gis-mcp[land_cover]' if you need this feature.")
 
+try:
+    from .visualize import map_tool, web_map_tool
+except ImportError as e:
+    map_tool = None
+    web_map_tool = None
+    import logging
+    logging.warning(f"Visualization modules could not be imported: {e}. Install with 'pip install gis-mcp[visualize]' if you need this feature.")
+
 
 import warnings
 warnings.filterwarnings('ignore')  # Suppress warnings for cleaner output

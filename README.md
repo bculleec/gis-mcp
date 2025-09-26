@@ -46,6 +46,8 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [GeoPandas Functions](#-geopandas-functions-13-total)
   - [Rasterio Functions](#-rasterio-functions-20-total)
   - [PySAL Functions](#-pysal-functions-15-total)
+  - [Map Functions](#-map-functions-1-total)
+  - [Web Map Functions](#-web-map-functions-1-total)
   - [Administrative Boundaries Functions](#-administrative-boundaries-functions-1-total)
   - [Climate Data Functions](#-climate-data-functions-1-total)
   - [Ecology Data Functions](#-ecology-data-functions-2-total)
@@ -441,6 +443,19 @@ This section provides a comprehensive list of all available functions organized 
 - `build_transform_and_save_weights` - Build, transform, and save weights
 - `ols_with_spatial_diagnostics_safe` - OLS regression with spatial diagnostics
 - `build_and_transform_weights` - Build and transform weights
+
+### 🔷 Map Functions (1 total)
+
+**Static Map Visualization (Matplotlib/GeoPandas):**
+
+- `create_map` – Generate static maps (PNG) with styling options
+
+### 🔷 Web Map Functions (1 total)
+
+**Interactive Web Map Visualization (Folium):**
+
+- `create_web_map` – Generate interactive web maps (HTML) with legends, basemaps, layer toggling, titles, and tooltips
+
 
 ### 🔷 Administrative Boundaries Functions (1 total)
 
