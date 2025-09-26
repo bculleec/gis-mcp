@@ -46,8 +46,9 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [GeoPandas Functions](#-geopandas-functions-13-total)
   - [Rasterio Functions](#-rasterio-functions-20-total)
   - [PySAL Functions](#-pysal-functions-15-total)
-  - [Map Functions](#-map-functions-1-total)
-  - [Web Map Functions](#-web-map-functions-1-total)
+  - [Visualization Functions](#-visualization-functions-2-total)
+    - [Static Map Functions](#-static-map-functions-1-total)
+    - [Interactive Web Map Functions](#-interactive-web-map-functions-1-total)
   - [Administrative Boundaries Functions](#-administrative-boundaries-functions-1-total)
   - [Climate Data Functions](#-climate-data-functions-1-total)
   - [Ecology Data Functions](#-ecology-data-functions-2-total)
@@ -118,6 +119,19 @@ uv venv --python=3.10
 ```bash
 uv pip install gis-mcp
 ```
+
+#### Install with Visualization Features
+
+To install with visualization capabilities (Folium and PyDeck for interactive maps):
+
+```bash
+uv pip install gis-mcp[visualize]
+```
+
+This will install additional dependencies:
+
+- `folium>=0.15.0` - For creating interactive web maps
+- `pydeck>=0.9.0` - For advanced 3D visualizations
 
 4. Start the server:
 
@@ -444,17 +458,15 @@ This section provides a comprehensive list of all available functions organized 
 - `ols_with_spatial_diagnostics_safe` - OLS regression with spatial diagnostics
 - `build_and_transform_weights` - Build and transform weights
 
-### 🔷 Map Functions (1 total)
+### 🔷 Visualization Functions (2 total)
 
 **Static Map Visualization (Matplotlib/GeoPandas):**
 
-- `create_map` – Generate static maps (PNG) with styling options
-
-### 🔷 Web Map Functions (1 total)
+- `create_map` – Generate high-quality static maps (PNG, PDF, JPG) from multiple geospatial data sources including shapefiles, rasters, WKT geometries, and coordinate arrays. Supports multiple layers with individual styling options, legends, titles, and grid overlays.
 
 **Interactive Web Map Visualization (Folium):**
 
-- `create_web_map` – Generate interactive web maps (HTML) with legends, basemaps, layer toggling, titles, and tooltips
+- `create_web_map` – Generate interactive HTML maps using Folium with layer controls, legends, scale bars, dynamic titles, tooltips, and minimap. Supports multiple basemap options and responsive design for web browsers.
 
 ### 🔷 Administrative Boundaries Functions (1 total)
 
@@ -534,6 +546,53 @@ Parameters: {
     "point1": [0, 0],
     "point2": [10, 10],
     "ellps": "WGS84"
+}
+```
+
+### Static Map Creation
+
+```python
+Tool: create_map
+Parameters: {
+    "layers": [
+        {
+            "data": "buildings.shp",
+            "style": {"label": "Buildings", "color": "red", "alpha": 0.7}
+        },
+        {
+            "data": "roads.shp",
+            "style": {"label": "Roads", "color": "black", "linewidth": 1}
+        }
+    ],
+    "filename": "city_analysis",
+    "filetype": "png",
+    "title": "City Infrastructure Analysis",
+    "show_grid": true,
+    "add_legend": true
+}
+```
+
+### Interactive Web Map Creation
+
+```python
+Tool: create_web_map
+Parameters: {
+    "layers": [
+        {
+            "data": "buildings.shp",
+            "style": {"label": "Buildings", "color": "red"}
+        },
+        {
+            "data": "parks.geojson",
+            "style": {"label": "Parks", "color": "green"}
+        }
+    ],
+    "filename": "city_interactive.html",
+    "title": "City Infrastructure Map",
+    "basemap": "CartoDB positron",
+    "show_grid": true,
+    "add_legend": true,
+    "add_minimap": true
 }
 ```
 
