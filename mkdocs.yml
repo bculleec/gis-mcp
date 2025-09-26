@@ -121,6 +121,10 @@ nav:
                   - knn_weights: api/pysal/knn_weights.md
                   - ols_with_spatial_diagnostics_safe: api/pysal/ols_with_spatial_diagnostics_safe.md
                   - weights_from_shapefile: api/pysal/weights_from_shapefile.md
+              - Visualization:
+                  - Overview: api/visualize/README.md
+                  - create_map: api/visualize/create_map.md
+                  - create_web_map: api/visualize/create_web_map.md
           - Data Gathering:
               - Overview: data-gathering/README.md
               - Administrative Boundaries: data-gathering/administrative_boundaries.md

@@ -19,6 +19,19 @@ uv venv --python=3.10
 uv pip install gis-mcp
 ```
 
+### Install with visualization features
+
+To install with visualization capabilities (Folium and PyDeck for interactive maps):
+
+```bash
+uv pip install gis-mcp[visualize]
+```
+
+This will install additional dependencies:
+
+- `folium>=0.15.0` - For creating interactive web maps
+- `pydeck>=0.9.0` - For advanced 3D visualizations
+
 3. Run the server:
 
 ```bash
