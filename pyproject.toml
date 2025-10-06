@@ -44,6 +44,7 @@ dependencies = [
     "esda>=2.7.0",
     "spreg==1.8.3",
     "pillow>=10.0.0",
+    "giddy>=2.3.6",
 ]
 
 [project.optional-dependencies]
