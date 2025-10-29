@@ -238,6 +238,13 @@ html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
 
   <section class="hero">
     <div class="hero-inner">
+      <img src="Logo.png" alt="GIS MCP Server Logo" width="300"/>
+      <br/>
+      <a href="https://metamask.app.link/send/?address=0x2253ce06b7bb4f215fd1aa64d599abaf5c27d3fa" style="display:inline-block; margin:10px 0;"><img src="https://img.shields.io/badge/Donate-ETH-orange?logo=ethereum&style=for-the-badge" alt="Donate ETH"/></a>
+      <br/>
+      <div style="margin:10px 0;color:#faa;">
+        <strong>Support GIS MCP Server—ETH donations welcome!</strong>
+      </div>
       <span class="eyebrow">Model Context Protocol · Geospatial</span>
       <h1>Bring real GIS analysis to your AI assistants.</h1>
       <div class="slogan">GIS MCP Server is the backend for your GIS AI Agent</div>
