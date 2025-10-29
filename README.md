@@ -681,3 +681,9 @@ Made with [contrib.rocks](https://contrib.rocks).
     <img src="https://mcp.so/logo.png" alt="MCP.so Badge" width="150"/>
   </a>
 </div>
+
+## 🙏 Support & Donations
+
+If you find GIS MCP Server useful, please consider supporting the project:
+
+👉 [How to Donate & Support (ETH, QR code, and more)](docs/donnate.md)
