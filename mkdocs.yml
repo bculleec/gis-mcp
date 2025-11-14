@@ -26,7 +26,15 @@ nav:
           - pip: install/pip.md
           - Developers: install/developers.md
       - API Reference:
-          - Data Analysis:
+          - Data Gathering:
+              - Overview: data-gathering/README.md
+              - Administrative Boundaries: data-gathering/administrative_boundaries.md
+              - Climate: data-gathering/climate.md
+              - Ecology: data-gathering/ecology.md
+              - Movement: data-gathering/movement.md
+              - Satellite Imagery: data-gathering/satellite_imagery.md
+              - Land Cover: data-gathering/land_cover.md
+          - Analysis:
               - Shapely:
                   - Overview: api/shapely/README.md
                   - buffer: api/shapely/buffer.md
@@ -124,18 +132,10 @@ nav:
                   - spatial_markov: api/pysal/spatial_markov.md
                   - dynamic_lisa: api/pysal/dynamic_lisa.md
                   - gm_lag: api/pysal/gm_lag.md
-              - Visualization:
-                  - Overview: api/visualize/README.md
-                  - create_map: api/visualize/create_map.md
-                  - create_web_map: api/visualize/create_web_map.md
-          - Data Gathering:
-              - Overview: data-gathering/README.md
-              - Administrative Boundaries: data-gathering/administrative_boundaries.md
-              - Climate: data-gathering/climate.md
-              - Ecology: data-gathering/ecology.md
-              - Movement: data-gathering/movement.md
-              - Satellite Imagery: data-gathering/satellite_imagery.md
-              - Land Cover: data-gathering/land_cover.md
+          - Visualization:
+              - Overview: api/visualize/README.md
+              - create_map: api/visualize/create_map.md
+              - create_web_map: api/visualize/create_web_map.md
       - examples:
           - Overview: examples/README.md
           - Basic Spatial Analysis (claude): examples/basic_spatial_analysis_claude.md
