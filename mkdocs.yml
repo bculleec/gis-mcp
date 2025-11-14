@@ -115,12 +115,15 @@ nav:
                   - join_counts: api/pysal/join_counts.md
                   - join_counts_local: api/pysal/join_counts_local.md
                   - adbscan: api/pysal/adbscan.md
-                  - build_and_transform_weights: api/pysal/build_transform_and_save_weights.md
+                  - build_and_transform_weights: api/pysal/build_and_transform_weights.md
                   - build_transform_and_save_weights: api/pysal/build_transform_and_save_weights.md
                   - distance_band_weights: api/pysal/distance_band_weights.md
                   - knn_weights: api/pysal/knn_weights.md
                   - ols_with_spatial_diagnostics_safe: api/pysal/ols_with_spatial_diagnostics_safe.md
                   - weights_from_shapefile: api/pysal/weights_from_shapefile.md
+                  - spatial_markov: api/pysal/spatial_markov.md
+                  - dynamic_lisa: api/pysal/dynamic_lisa.md
+                  - gm_lag: api/pysal/gm_lag.md
               - Visualization:
                   - Overview: api/visualize/README.md
                   - create_map: api/visualize/create_map.md

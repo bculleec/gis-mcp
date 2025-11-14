@@ -47,7 +47,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [PyProj Functions](#-pyproj-functions-13-total)
   - [GeoPandas Functions](#-geopandas-functions-13-total)
   - [Rasterio Functions](#-rasterio-functions-20-total)
-  - [PySAL Functions](#-pysal-functions-15-total)
+  - [PySAL Functions](#-pysal-functions-18-total)
   - [Visualization Functions](#-visualization-functions-2-total)
     - [Static Map Functions](#-static-map-functions-1-total)
     - [Interactive Web Map Functions](#-interactive-web-map-functions-1-total)
@@ -445,7 +445,7 @@ This section provides a comprehensive list of all available functions organized 
 - `hillshade` - Generate hillshade from DEM
 - `write_raster` - Write array to raster file
 
-### 🔷 PySAL Functions (15 total)
+### 🔷 PySAL Functions (18 total)
 
 **Spatial Autocorrelation:**
 
@@ -473,6 +473,15 @@ This section provides a comprehensive list of all available functions organized 
 - `build_transform_and_save_weights` - Build, transform, and save weights
 - `ols_with_spatial_diagnostics_safe` - OLS regression with spatial diagnostics
 - `build_and_transform_weights` - Build and transform weights
+
+**Spatial-Temporal Analysis:**
+
+- `spatial_markov` - Spatial Markov analysis for panel data
+- `dynamic_lisa` - Dynamic LISA (directional LISA) analysis
+
+**Spatial Regression:**
+
+- `gm_lag` - GM_Lag spatial 2SLS/GMM-IV spatial lag model
 
 ### 🔷 Visualization Functions (2 total)
 
@@ -523,7 +532,7 @@ This section provides a comprehensive list of all available functions organized 
 
 - `download_satellite_imagery` – Download and stack bands from STAC items (e.g., Sentinel-2, Landsat), with optional crop and reprojection
 
-**Total Functions Available: 89**
+**Total Functions Available: 92**
 
 ## 🛠 Client Development
 
