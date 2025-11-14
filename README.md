@@ -1,5 +1,9 @@
 # GIS MCP Server
 
+[![PyPI version](https://img.shields.io/pypi/v/gis-mcp.svg)](https://pypi.org/project/gis-mcp/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/gis-mcp.svg)](https://pypi.org/project/gis-mcp/)
+<br/></br>
+
 <div align="center">
   <h3>✨ Want to perform accurate geospatial analysis in your chatbot? ✨</h3>
   <p><strong>Install GIS-MCP and transform your AI's spatial capabilities!</strong></p>
@@ -15,9 +19,9 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 
 🌐 **Website:** [gis-mcp.com](https://gis-mcp.com)
 
-> Current version is 0.9.0 (Beta):
+> Current version is 0.10.0 (Beta):
 >
-> Version 0.10.0 (Beta) is under active development. We welcome contributions and developers to join us in building this project.
+> We welcome contributions and developers to join us in building this project.
 
 ## 🎥 Demo
 
@@ -685,6 +689,10 @@ Made with [contrib.rocks](https://contrib.rocks).
 ## 🏆 Badges
 
 <div align="center">
+
+[![PyPI version](https://img.shields.io/pypi/v/gis-mcp.svg)](https://pypi.org/project/gis-mcp/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/gis-mcp.svg)](https://pypi.org/project/gis-mcp/)
+<br/></br>
 
 [![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/mahdin75/gis-mcp)](https://archestra.ai/mcp-catalog/mahdin75__gis-mcp)
 <br/></br>
