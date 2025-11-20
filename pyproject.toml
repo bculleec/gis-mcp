@@ -31,7 +31,6 @@ classifiers = [
 ]
 
 dependencies = [
-    "mcp==1.6.0",
     "numpy>=1.23,<2.0",
     "shapely>=2.1.0",
     "pyproj>=3.7.1",
@@ -45,6 +44,7 @@ dependencies = [
     "spreg==1.8.3",
     "pillow>=10.0.0",
     "giddy>=2.3.6",
+    "fastmcp==2.13.1",
 ]
 
 [project.optional-dependencies]

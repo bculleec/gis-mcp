@@ -8,6 +8,7 @@ and transformations.
 import logging
 import argparse
 import sys
+import os
 from .mcp import gis_mcp
 try:
     from .data import administrative_boundaries
@@ -90,10 +91,26 @@ def main():
         logging.getLogger().setLevel(logging.DEBUG)
         logger.debug("Debug logging enabled")
     
+    # Get transport configuration from environment variables
+    transport = os.getenv('GIS_MCP_TRANSPORT', 'stdio').lower()
+    
     try:
-        # Start the MCP server
-        print("Starting GIS MCP server...")
-        gis_mcp.run()
+        if transport == 'stdio':
+            # Default stdio transport
+            print("Starting GIS MCP server with STDIO transport...")
+            logger.info("STDIO transport enabled (default)")
+            gis_mcp.run()
+        else:
+            # HTTP transport configuration
+            host = os.getenv('GIS_MCP_HOST', '0.0.0.0')
+            port = int(os.getenv('GIS_MCP_PORT', '8080'))
+            
+            print(f"Starting GIS MCP server with {transport} transport on {host}:{port}")
+            print(f"MCP endpoint will be available at: http://{host}:{port}/mcp")
+            logger.info(f"{transport} transport enabled - {host}:{port}")
+            
+            gis_mcp.run(transport, host, port)
+            
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
     except Exception as e:
@@ -101,5 +118,4 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    main() 
-
+    main()

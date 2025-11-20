@@ -2,8 +2,16 @@
 # syntax=docker/dockerfile:1
 FROM python:3.10-slim
 
-# Install build essentials
-RUN apt-get update && apt-get install -y --no-install-recommends gcc && rm -rf /var/lib/apt/lists/*
+# Install build essentials and geospatial dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    gdal-bin \
+    libgdal-dev \
+    libproj-dev \
+    libgeos-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set workdir
 WORKDIR /app
@@ -12,11 +20,44 @@ WORKDIR /app
 COPY README.md LICENSE pyproject.toml ./
 COPY src/ ./src
 
-# Install the package
-RUN pip install --no-cache-dir .
+# Install geospatial packages first with pre-built wheels to avoid compilation issues
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+    "numpy>=1.23,<2.0" \
+    "shapely>=2.1.0" \
+    "pyproj>=3.7.1" \
+    "pandas>=2.0.0" \
+    --only-binary=all
 
-# Expose default port (not used for stdio)
-EXPOSE 8080
+# Install remaining packages that might need compilation
+RUN pip install --no-cache-dir \
+    fiona \
+    geopandas \
+    rasterio \
+    --prefer-binary
+
+# Install the main package (which should now find all dependencies already installed)
+RUN pip install --no-cache-dir --no-deps .
+
+# Install any remaining dependencies
+RUN pip install --no-cache-dir \
+    mcp==2.13.1 \
+    tabulate>=0.9.0 \
+    libpysal>=4.13.0 \
+    esda>=2.7.0 \
+    spreg==1.8.3 \
+    pillow>=10.0.0 \
+    giddy>=2.3.6 \
+    PyYAML>=6.0
+
+# Environment variables for transport configuration
+# Default to stdio for backward compatibility, set GIS_MCP_TRANSPORT=http for HTTP mode
+ENV GIS_MCP_TRANSPORT=http
+ENV GIS_MCP_HOST=0.0.0.0
+ENV GIS_MCP_PORT=9010
+
+# Expose HTTP port
+EXPOSE 9010
 
 # Default command
 CMD ["gis-mcp"]
