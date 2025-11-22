@@ -45,7 +45,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 - [Features](#-features)
 - [Prerequisites](#-prerequisites)
 - [Installation](#-installation)
-  - [Installing via Smithery](#-installing-via-smithery)
+  - [Docker Installation](#-docker-installation)
   - [pip Installation](#-pip-installation)
   - [Development Installation](#-development-installation)
 - [Available Functions](#-available-functions)
@@ -98,13 +98,47 @@ GIS MCP Server empowers AI assistants with advanced geospatial intelligence. Key
 
 Choose the installation method that best suits your needs:
 
-### 🛠 Installing via Smithery
+### 🐳 Docker Installation
 
-To install GIS MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mahdin75/gis-mcp):
+GIS MCP Server can be run using Docker, which provides an isolated environment with all dependencies pre-installed.
+
+**Important:** Both `Dockerfile` and `Dockerfile.local` have **HTTP transport mode enabled by default**. The server runs on port `9010` and is accessible at `http://localhost:9010/mcp`.
+
+#### Using Dockerfile
+
+The main `Dockerfile` installs the package from PyPI:
+
+1. Build the Docker image:
 
 ```bash
-npx -y @smithery/cli install @mahdin75/gis-mcp --client claude
+docker build -t gis-mcp .
 ```
+
+2. Run the container (HTTP mode is enabled by default):
+
+```bash
+docker run -p 9010:9010 gis-mcp
+```
+
+#### Using Dockerfile.local
+
+The `Dockerfile.local` installs the package from local source files (useful for development or custom builds):
+
+1. Build the Docker image:
+
+```bash
+docker build -f Dockerfile.local -t gis-mcp:local .
+```
+
+2. Run the container (HTTP mode is enabled by default):
+
+```bash
+docker run -p 9010:9010 gis-mcp:local
+```
+
+The server will be available at `http://localhost:9010/mcp` in HTTP transport mode.
+
+For more details on Docker configuration and environment variables, see the [Docker installation guide](docs/install/docker.md).
 
 ### 📦 pip Installation
 
@@ -160,6 +194,18 @@ This will install additional dependencies:
 ```bash
 gis-mcp
 ```
+
+By default, the server runs in **STDIO transport mode**, which is ideal for local development and integration with Claude Desktop or Cursor IDE.
+
+You can also run the server in **HTTP transport mode** for network deployments:
+
+```bash
+export GIS_MCP_TRANSPORT=http
+export GIS_MCP_PORT=8080
+gis-mcp
+```
+
+For more details on transport modes (STDIO vs HTTP), see the [HTTP Transport Configuration](docs/http-transport.md) documentation.
 
 #### pip Configuration
 

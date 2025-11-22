@@ -38,6 +38,18 @@ This will install additional dependencies:
 gis-mcp
 ```
 
+By default, the server runs in **STDIO transport mode**, which is ideal for local development and integration with Claude Desktop or Cursor IDE.
+
+You can also run the server in **HTTP transport mode** for network deployments:
+
+```bash
+export GIS_MCP_TRANSPORT=http
+export GIS_MCP_PORT=8080
+gis-mcp
+```
+
+For more details on transport modes (STDIO vs HTTP), see the [HTTP Transport Configuration](../http-transport.md) documentation.
+
 ### Client configuration for pip installs
 
 Claude Desktop (Windows):

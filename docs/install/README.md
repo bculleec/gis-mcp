@@ -2,6 +2,6 @@
 
 Pick the path that matches your setup:
 
-- Smithery - see Smithery
+- Docker - see Docker
 - pip install with client configuration: see pip
 - Development (editable) install with client configuration: see Developers

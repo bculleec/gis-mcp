@@ -19,13 +19,15 @@ theme:
 nav:
   - HOME: index.md
   - Getting Started: getting-started.md
-  - DOCUMENTATIONS:
-      - Installations:
-          - Overview: install/README.md
-          - Smithery: install/smithery.md
-          - pip: install/pip.md
-          - Developers: install/developers.md
-      - API Reference:
+      - DOCUMENTATIONS:
+          - Installations:
+              - Overview: install/README.md
+              - Docker: install/docker.md
+              - pip: install/pip.md
+              - Developers: install/developers.md
+          - Configuration:
+              - HTTP Transport: http-transport.md
+          - API Reference:
           - Data Gathering:
               - Overview: data-gathering/README.md
               - Administrative Boundaries: data-gathering/administrative_boundaries.md
