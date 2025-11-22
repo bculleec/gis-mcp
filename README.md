@@ -2,8 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/gis-mcp.svg)](https://pypi.org/project/gis-mcp/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/gis-mcp.svg)](https://pypi.org/project/gis-mcp/)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mahdin75/gis-mcp
-)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mahdin75/gis-mcp)
 <br/></br>
 
 <div align="center">
@@ -21,7 +20,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 
 🌐 **Website:** [gis-mcp.com](https://gis-mcp.com)
 
-> Current version is 0.10.0 (Beta):
+> Current version is 0.11.0 (Beta):
 >
 > We welcome contributions and developers to join us in building this project.
 
