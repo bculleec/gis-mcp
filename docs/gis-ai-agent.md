@@ -1,705 +1,510 @@
-# GIS MCP Agents - From Zero to Hero Tutorial
+# GIS MCP LangChain Agent
 
-Welcome! This tutorial will guide you from complete beginner to creating your own AI agent that can perform geospatial operations. No prior experience needed - we'll cover everything step by step.
+A LangChain-based agent implementation that connects to the GIS MCP (Model Context Protocol) server to provide geospatial analysis capabilities through natural language interactions.
 
-## 📋 Table of Contents
+## Overview
 
-- [What You'll Build](#what-youll-build)
-- [Prerequisites](#prerequisites)
-- [Step 1: Install GIS MCP Server](#step-1-install-gis-mcp-server)
-- [Step 2: Install Agent Dependencies](#step-2-install-agent-dependencies)
-- [Step 3: Start the MCP Server](#step-3-start-the-mcp-server)
-- [Step 4: Get Your OpenRouter API Key](#step-4-get-your-openrouter-api-key)
-- [Step 5: Select a Model](#step-5-select-a-model)
-- [Step 6: Build Your First Agent from Scratch](#step-6-build-your-first-agent-from-scratch)
-- [Step 7: Test Your Agent](#step-7-test-your-agent)
-- [Step 8: Customize Your Agent](#step-8-customize-your-agent)
-- [Troubleshooting](#troubleshooting)
-- [Next Steps](#next-steps)
+This agent utilizes:
 
-## What You'll Build
+- **LangChain**: For agent orchestration and tool integration
+- **OpenRouter API**: For language model access (supports multiple models)
+- **GIS MCP Server**: For geospatial operations and analysis
+- **MultiServerMCPClient**: For seamless MCP server integration
 
-By the end of this tutorial, you'll have:
+## Features
 
-- ✅ A working GIS MCP server running locally
-- ✅ Your own AI agent built with LangChain
-- ✅ An agent that can perform geospatial operations like:
-  - Calculate distances between points
-  - Transform coordinates between different systems
-  - Create buffers around locations
-  - Perform spatial analysis
-  - And much more!
+- Natural language interface for GIS operations
+- Support for multiple AI models via OpenRouter
+- Automatic tool discovery from MCP server
+- Interactive command-line interface
+- Comprehensive error handling and diagnostics
 
 ## Prerequisites
 
-Before we start, make sure you have:
+- Python 3.10 or higher
+- Virtual environment (recommended)
+- OpenRouter API key ([Get one here](https://openrouter.ai/keys))
+- GIS MCP server installed and running
 
-- **Python 3.10 or higher** installed ([Download Python](https://www.python.org/downloads/))
-- **A code editor** (VS Code, PyCharm, or any text editor)
-- **An internet connection** for installing packages
-- **Basic command line knowledge** (we'll guide you through everything)
+## Installation
 
-That's it! No prior AI or GIS experience needed.
-
----
-
-## Step 1: Install GIS MCP Server
-
-The GIS MCP Server provides all the geospatial tools your agent will use. Let's install it.
-
-### Option A: Using pip (Recommended)
-
-1. **Open your terminal/command prompt**
-
-   - **Windows**: Press `Win + R`, type `cmd` or `powershell`, press Enter
-   - **Mac/Linux**: Open Terminal
-
-2. **Create a project folder** (optional but recommended):
-
-   ```bash
-   mkdir gis-agent-project
-   cd gis-agent-project
-   ```
-
-3. **Create a virtual environment** (keeps packages organized):
-
-   ```bash
-   # Windows
-   python -m venv .venv
-   .\.venv\Scripts\Activate.ps1
-
-   # Mac/Linux
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
-
-   You should see `(.venv)` at the start of your command line.
-
-4. **Install GIS MCP Server**:
-
-   ```bash
-   pip install gis-mcp
-   ```
-
-   Wait for the installation to complete. This may take a few minutes.
-
-### Option B: Using uv (Faster Alternative)
-
-If you want faster installation:
+### 1. Install GIS MCP Server
 
 ```bash
-# Install uv first
-pip install uv
-
-# Create virtual environment
-uv venv --python=3.10
-
-# Activate it
-# Windows:
-.\.venv\Scripts\Activate.ps1
-# Mac/Linux:
-source .venv/bin/activate
-
-# Install GIS MCP
-uv pip install gis-mcp
+pip install gis-mcp
 ```
 
-**✅ Verification**: Test that it's installed:
+### 2. Install Agent Dependencies
 
 ```bash
-gis-mcp --help
+pip install -r requirements.txt
 ```
 
-You should see help text. If you get an error, make sure your virtual environment is activated.
-
----
-
-## Step 2: Install Agent Dependencies
-
-Now let's install the packages needed to build your agent with LangChain.
-
-1. **Create a requirements file** (or install directly):
-
-   Create a file named `requirements.txt` in your project folder with this content:
-
-   ```
-   langchain>=0.1.0
-   langchain-openai>=0.1.0
-   langchain-core>=0.1.0
-   httpx>=0.25.0
-   python-dotenv>=1.0.0
-   ```
-
-2. **Install the dependencies**:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-   Or install them one by one:
-
-   ```bash
-   pip install langchain langchain-openai langchain-core httpx python-dotenv
-   ```
-
-**✅ Verification**: Check that LangChain is installed:
+Or install manually:
 
 ```bash
-python -c "import langchain; print('LangChain installed successfully!')"
+pip install langchain langchain-openai langchain-core langchain-mcp-adapters python-dotenv
 ```
 
----
+## Configuration
 
-## Step 3: Start the MCP Server
+### 1. Set Up Environment Variables
 
-The MCP server needs to be running for your agent to use GIS tools. Let's start it in HTTP mode.
+Create a `.env` file in the project root:
 
-### Windows (PowerShell)
-
-Open a **new terminal window** (keep your current one open too - you'll need both):
-
-```powershell
-# Activate your virtual environment first
-.\.venv\Scripts\Activate.ps1
-
-# Set environment variables
-$env:GIS_MCP_TRANSPORT="http"
-$env:GIS_MCP_HOST="localhost"
-$env:GIS_MCP_PORT="8080"
-
-# Start the server
-gis-mcp
+```env
+OPENROUTER_API_KEY=your_api_key_here
 ```
 
-### Windows (Command Prompt)
+Alternatively, set the environment variable directly:
 
-```cmd
-.\.venv\Scripts\activate
-set GIS_MCP_TRANSPORT=http
-set GIS_MCP_HOST=localhost
-set GIS_MCP_PORT=8080
-gis-mcp
-```
-
-### Mac/Linux
-
-```bash
-source .venv/bin/activate
-export GIS_MCP_TRANSPORT=http
-export GIS_MCP_HOST=localhost
-export GIS_MCP_PORT=8080
-gis-mcp
-```
-
-**✅ You should see**:
-
-```
-Starting GIS MCP server with http transport on localhost:8080
-MCP endpoint will be available at: http://localhost:8080/mcp
-```
-
-**⚠️ Important**: Keep this terminal window open! The server needs to keep running. You'll use your other terminal for the next steps.
-
-**✅ Verification**: Test that the server is running:
-
-Open a **new terminal** and run:
-
-```bash
-# Windows PowerShell
-curl http://localhost:8080/mcp/tools/list
-
-# Or use Python
-python -c "import requests; print(requests.get('http://localhost:8080/mcp/tools/list').json())"
-```
-
-You should see a list of available GIS tools in JSON format.
-
----
-
-## Step 4: Get Your OpenRouter API Key
-
-OpenRouter is a service that gives you access to many AI models (including DeepSeek, Gemini, GPT-4, Claude, etc.) through a single API. This is perfect for our agent!
-
-### Create an OpenRouter Account
-
-1. **Visit** [https://openrouter.ai](https://openrouter.ai)
-2. **Click "Sign Up"** (or "Log In" if you have an account)
-3. **Create your account** (you can use Google/GitHub to sign up quickly)
-
-### Get Your API Key
-
-1. **Navigate to API Keys**:
-
-   - Click your profile icon (top right)
-   - Select "Keys" or go directly to [https://openrouter.ai/keys](https://openrouter.ai/keys)
-
-2. **Create a new key**:
-
-   - Click "Create Key"
-   - Give it a name (e.g., "GIS Agent")
-   - Optionally set a credit limit (you can leave it unlimited)
-   - Click "Create"
-
-3. **Copy your API key**:
-   - Click the copy icon next to your key
-   - **Save it somewhere safe** - you'll need it in the next steps
-   - ⚠️ **Never share your API key publicly!**
-
-### Set Your API Key as Environment Variable
-
-**Windows (PowerShell)**:
+**Windows PowerShell:**
 
 ```powershell
 $env:OPENROUTER_API_KEY="your_api_key_here"
 ```
 
-**Windows (Command Prompt)**:
+**Windows CMD:**
 
 ```cmd
 set OPENROUTER_API_KEY=your_api_key_here
 ```
 
-**Mac/Linux**:
+**Mac/Linux:**
 
 ```bash
 export OPENROUTER_API_KEY="your_api_key_here"
 ```
 
-**✅ Verification**: Check that it's set:
+### 2. Configure MCP Server
+
+The agent expects the GIS MCP server to be running on `http://localhost:9010/mcp`.
+
+Start the server in a separate terminal:
+
+**Windows PowerShell:**
+
+```powershell
+# Activate virtual environment
+.\.venv\Scripts\Activate.ps1
+
+# Set environment variables
+$env:GIS_MCP_TRANSPORT="http"
+$env:GIS_MCP_HOST="localhost"
+$env:GIS_MCP_PORT="9010"
+
+# Start server
+gis-mcp
+```
+
+**Windows CMD:**
+
+```cmd
+.\.venv\Scripts\activate
+set GIS_MCP_TRANSPORT=http
+set GIS_MCP_HOST=localhost
+set GIS_MCP_PORT=9010
+gis-mcp
+```
+
+**Mac/Linux:**
 
 ```bash
-# Windows PowerShell
-echo $env:OPENROUTER_API_KEY
-
-# Windows CMD
-echo %OPENROUTER_API_KEY%
-
-# Mac/Linux
-echo $OPENROUTER_API_KEY
+source .venv/bin/activate
+export GIS_MCP_TRANSPORT=http
+export GIS_MCP_HOST=localhost
+export GIS_MCP_PORT=9010
+gis-mcp
 ```
 
-You should see your API key printed (don't worry, it's just in your terminal).
+**Expected server output:**
 
----
+```
+Starting GIS MCP server with http transport on localhost:9010
+MCP endpoint will be available at: http://localhost:9010/mcp
+```
 
-## Step 5: Select a Model
+### 3. Configure Model (Optional)
 
-OpenRouter gives you access to many models. Here are some great options for GIS agents:
-
-### Recommended Models
-
-1. **DeepSeek Chat v3.1** (Best for cost-effectiveness)
-
-   - Model ID: `deepseek/deepseek-chat-v3.1`
-   - Great reasoning, very affordable
-   - Excellent for technical tasks
-
-2. **Google Gemini Pro 1.5** (Best for general use)
-
-   - Model ID: `google/gemini-pro-1.5`
-   - Strong performance, good balance
-   - Also available: `google/gemini-2.0-flash-exp`
-
-3. **GPT-4o** (Best for complex tasks)
-
-   - Model ID: `openai/gpt-4o`
-   - Most capable, higher cost
-
-4. **Claude 3.5 Sonnet** (Best for analysis)
-   - Model ID: `anthropic/claude-3.5-sonnet`
-   - Excellent reasoning
-
-### Browse All Models
-
-Visit [https://openrouter.ai/models](https://openrouter.ai/models) to see all available models with pricing and capabilities.
-
-**💡 Tip**: For this tutorial, we'll use `deepseek/deepseek-chat-v3.1` as it's cost-effective and works great. You can easily switch to any other model later!
-
-**Note**: Gemini models are available on OpenRouter! You can use `google/gemini-pro-1.5` or `google/gemini-2.0-flash-exp` just like any other OpenRouter model - no need for a separate Google API key.
-
----
-
-## Step 6: Build Your First Agent from Scratch
-
-Now the fun part! Let's build your agent step by step.
-
-### Create Your Agent File
-
-Create a new file called `my_gis_agent.py` in your project folder:
+Edit `my_gis_agent.py` to change the model:
 
 ```python
-"""
-My First GIS Agent
-A simple agent that uses LangChain to connect to GIS MCP server
-"""
-
-import os
-import asyncio
-from langchain_openai import ChatOpenAI
-from langchain.agents import create_agent
-from langchain_core.messages import HumanMessage, AIMessage
-import httpx
-
-# Step 1: Configure your API key and MCP server
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-MCP_SERVER_URL = "http://localhost:8080/mcp"
-MODEL_NAME = "deepseek/deepseek-chat-v3.1"  # Change this to any OpenRouter model
-
-# Step 2: Create the language model
-# OpenRouter uses OpenAI-compatible API, so we use ChatOpenAI with custom base URL
-llm = ChatOpenAI(
-    model=MODEL_NAME,
-    api_key=OPENROUTER_API_KEY,
-    base_url="https://openrouter.ai/api/v1",
-    temperature=0.7,
-)
-
-# Step 3: Create a simple HTTP client to fetch tools from MCP server
-async def get_mcp_tools():
-    """Fetch available tools from the MCP server"""
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(f"{MCP_SERVER_URL}/tools/list")
-            response.raise_for_status()
-            tools_data = response.json()
-            return tools_data.get("tools", [])
-        except Exception as e:
-            print(f"Error fetching tools: {e}")
-            return []
-
-# Step 4: Create a tool wrapper for MCP tools
-from langchain_core.tools import BaseTool
-
-class MCPTool(BaseTool):
-    """Wrapper to make MCP tools work with LangChain"""
-
-    def __init__(self, tool_name: str, tool_description: str, mcp_url: str):
-        self.tool_name = tool_name
-        self.tool_description = tool_description
-        self.mcp_url = mcp_url
-        super().__init__(name=tool_name, description=tool_description)
-
-    def _run(self, *args, **kwargs):
-        """Synchronous version (not used)"""
-        raise NotImplementedError("Use async version")
-
-    async def _arun(self, *args, **kwargs):
-        """Call the MCP tool"""
-        async with httpx.AsyncClient() as client:
-            try:
-                response = await client.post(
-                    f"{self.mcp_url}/tools/call",
-                    json={
-                        "name": self.tool_name,
-                        "arguments": kwargs
-                    }
-                )
-                response.raise_for_status()
-                result = response.json()
-                # Format the result
-                if isinstance(result, dict):
-                    return str(result.get("content", result))
-                return str(result)
-            except Exception as e:
-                return f"Error: {str(e)}"
-
-# Step 5: Main function to run the agent
-async def main():
-    print("🤖 Building your GIS Agent...")
-    print(f"📡 Connecting to MCP server at {MCP_SERVER_URL}")
-
-    # Fetch tools from MCP server
-    print("📋 Loading GIS tools...")
-    tools_data = await get_mcp_tools()
-
-    if not tools_data:
-        print("❌ No tools found! Make sure MCP server is running.")
-        return
-
-    print(f"✅ Found {len(tools_data)} GIS tools!")
-
-    # Convert MCP tools to LangChain tools
-    langchain_tools = []
-    for tool_data in tools_data:
-        tool = MCPTool(
-            tool_name=tool_data.get("name", ""),
-            tool_description=tool_data.get("description", ""),
-            mcp_url=MCP_SERVER_URL
-        )
-        langchain_tools.append(tool)
-
-    # Create the agent with tools
-    print("🔧 Creating agent...")
-    system_prompt = """You are a helpful GIS assistant.
-You have access to various GIS tools through the MCP server.
-Use these tools to help users with geospatial operations.
-Always provide clear and accurate responses based on the tool results."""
-
-    agent = create_agent(
-        model=llm,
-        tools=langchain_tools,
-        system_prompt=system_prompt,
-        debug=True,  # Set to False to reduce output
-    )
-
-    print("✅ Agent ready!")
-    print("\n" + "="*60)
-    print("Ask me anything about GIS operations!")
-    print("Type 'exit' to quit")
-    print("="*60 + "\n")
-
-    # Interactive loop
-    while True:
-        try:
-            query = input("You: ").strip()
-            if query.lower() in ['exit', 'quit', 'q']:
-                break
-
-            if not query:
-                continue
-
-            print("\n🤔 Thinking...\n")
-
-            # Run the agent
-            result = await agent.ainvoke({
-                "messages": [HumanMessage(content=query)]
-            })
-
-            # Extract the response
-            messages = result.get("messages", [])
-            response_text = ""
-            for msg in reversed(messages):
-                if isinstance(msg, AIMessage):
-                    response_text = msg.content
-                    break
-
-            if not response_text:
-                response_text = str(messages[-1]) if messages else "No response"
-
-            print(f"\n🤖 Agent: {response_text}\n")
-            print("-" * 60 + "\n")
-
-        except KeyboardInterrupt:
-            print("\n\n👋 Goodbye!")
-            break
-        except Exception as e:
-            print(f"\n❌ Error: {e}\n")
-
-if __name__ == "__main__":
-    # Make sure API key is set
-    if not OPENROUTER_API_KEY:
-        print("❌ Error: OPENROUTER_API_KEY not set!")
-        print("Set it with: $env:OPENROUTER_API_KEY='your_key' (PowerShell)")
-        print("Or: export OPENROUTER_API_KEY='your_key' (Mac/Linux)")
-        exit(1)
-
-    # Run the agent
-    asyncio.run(main())
+MODEL_NAME = "deepseek/deepseek-chat-v3.1"  # Default model
 ```
 
-### Save and Run Your Agent
+**Available models on OpenRouter:**
 
-1. **Save the file** as `my_gis_agent.py`
+- `deepseek/deepseek-chat-v3.1` - Cost-effective, excellent for technical tasks
+- `google/gemini-pro-1.5` - Strong general performance
+- `google/gemini-2.0-flash-exp` - Fast Gemini model
+- `openai/gpt-4o` - Most capable, higher cost
+- `anthropic/claude-3.5-sonnet` - Excellent reasoning
 
-2. **Make sure**:
+Browse all models at [https://openrouter.ai/models](https://openrouter.ai/models)
 
-   - Your MCP server is still running (Step 3)
-   - Your API key is set (Step 4)
+## Usage
 
-3. **Run your agent**:
+### Running the Agent
+
+1. **Create the agent file:**
+
+   Save the following code to a file named `my_gis_agent.py` in your project directory:
+
+   ```python
+   """
+   GIS Agent Implementation
+
+   A LangChain-based agent that connects to the GIS MCP server
+   via MultiServerMCPClient to provide geospatial analysis capabilities.
+   """
+
+   import os
+   import asyncio
+   from typing import Optional, List, Any
+   from dotenv import load_dotenv
+   from langchain_openai import ChatOpenAI
+   from langchain.agents import create_agent
+   from langchain_core.messages import AIMessage
+   from langchain_mcp_adapters.client import MultiServerMCPClient
+
+   # Load environment variables from .env file
+   load_dotenv()
+
+   # Configuration constants
+   OPENROUTER_API_KEY: Optional[str] = os.getenv("OPENROUTER_API_KEY")
+   MCP_SERVER_URL: str = "http://localhost:9010/mcp"
+   MODEL_NAME: str = "deepseek/deepseek-chat-v3.1"
+   OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+   DEFAULT_TEMPERATURE: float = 0.7
+
+   # System prompt for the agent
+   SYSTEM_PROMPT: str = (
+       "You are a helpful GIS assistant. You have access to various GIS tools "
+       "through the MCP server. Use these tools to help users with geospatial "
+       "operations. Always provide clear and accurate responses based on the tool results."
+   )
+
+
+   def initialize_language_model() -> ChatOpenAI:
+       """Initialize and configure the language model using OpenRouter."""
+       return ChatOpenAI(
+           model=MODEL_NAME,
+           api_key=OPENROUTER_API_KEY,
+           base_url=OPENROUTER_BASE_URL,
+           temperature=DEFAULT_TEMPERATURE,
+       )
+
+
+   def initialize_mcp_client() -> MultiServerMCPClient:
+       """Initialize the MultiServerMCPClient for connecting to the GIS MCP server."""
+       return MultiServerMCPClient(
+           {
+               "gis": {
+                   "transport": "streamable_http",
+                   "url": MCP_SERVER_URL,
+               }
+           }
+       )
+
+
+   async def load_gis_tools(client: MultiServerMCPClient) -> Optional[List[Any]]:
+       """Load available GIS tools from the MCP server."""
+       try:
+           tools = await client.get_tools()
+           return tools if tools else None
+       except Exception:
+           return None
+
+
+   def extract_agent_response(result: dict) -> str:
+       """Extract the AI response message from the agent result."""
+       messages = result.get("messages", [])
+       for msg in reversed(messages):
+           if isinstance(msg, AIMessage):
+               return msg.content
+       return str(messages[-1]) if messages else "No response generated"
+
+
+   async def run_interactive_session(agent: Any) -> None:
+       """Run the interactive agent session loop."""
+       while True:
+           try:
+               query = input("You: ").strip()
+               if query.lower() in ["exit", "quit", "q"]:
+                   break
+               if not query:
+                   continue
+
+               result = await agent.ainvoke({
+                   "messages": [{"role": "user", "content": query}]
+               })
+
+               response_text = extract_agent_response(result)
+               print(f"Agent: {response_text}\n")
+
+           except KeyboardInterrupt:
+               break
+           except Exception as e:
+               print(f"Error: {e}\n")
+
+
+   async def main() -> None:
+       """Main entry point for the GIS agent application."""
+       if not OPENROUTER_API_KEY:
+           print("Error: OPENROUTER_API_KEY is not set.")
+           return
+
+       # Initialize language model
+       llm = initialize_language_model()
+
+       # Initialize MCP client
+       client = initialize_mcp_client()
+
+       # Load GIS tools from MCP server
+       tools = await load_gis_tools(client)
+       if tools is None:
+           print("Error: Failed to load tools from MCP server.")
+           return
+
+       # Create agent with loaded tools
+       agent = create_agent(
+           model=llm,
+           tools=tools,
+           system_prompt=SYSTEM_PROMPT
+       )
+
+       # Run interactive session
+       await run_interactive_session(agent)
+
+
+   if __name__ == "__main__":
+       asyncio.run(main())
+   ```
+
+2. **Ensure the MCP server is running** (see Configuration step 2)
+
+3. **Run the agent:**
 
    ```bash
    python my_gis_agent.py
    ```
 
-**🎉 Congratulations!** You just built your first GIS agent from scratch!
+4. **Interact with the agent:**
 
----
+   ```
+   You: Calculate the distance between points (0, 0) and (1, 1) in WGS84
+   Agent: [Response with calculation results]
+   ```
 
-## Step 7: Test Your Agent
+5. **Exit the agent:**
+   - Type `exit`, `quit`, or `q`
+   - Or press `Ctrl+C`
 
-Now let's test it with some real GIS queries!
+### Example Queries
 
-### Test Queries
+- **Distance calculations:**
 
-Try asking your agent:
+  - "Calculate the distance between points (0, 0) and (1, 1) in WGS84"
+  - "What's the distance from New York to Los Angeles?"
 
-1. **"What GIS operations can you help me with?"**
+- **Coordinate transformations:**
 
-   - This will show you what tools are available
+  - "Transform point (0, 30) from WGS84 to Mercator projection"
+  - "Convert coordinates (40.7128, -74.0060) to UTM zone 18N"
 
-2. **"Calculate the distance between points (0, 0) and (1, 1) in WGS84"**
+- **Spatial operations:**
 
-   - Tests coordinate calculations
+  - "Create a 1km buffer around point (lat: 0, lon: 30)"
+  - "What is the area of a polygon with coordinates [(0,0), (1,0), (1,1), (0,1), (0,0)]?"
 
-3. **"Transform point (0, 30) from WGS84 to Mercator projection"**
+- **General queries:**
+  - "What GIS operations can you help me with?"
+  - "List all available geospatial tools"
 
-   - Tests coordinate transformation
+## Architecture
 
-4. **"Create a 1km buffer around point (lat: 0, lon: 30)"**
+### Components
 
-   - Tests geometric operations
+1. **Language Model (LLM)**
 
-5. **"What is the area of a polygon with coordinates [(0,0), (1,0), (1,1), (0,1), (0,0)]?"**
-   - Tests area calculations
+   - Configured via `ChatOpenAI` with OpenRouter base URL
+   - Handles natural language understanding and generation
 
-### What to Expect
+2. **MCP Client**
 
-- The agent will think about your query
-- It will automatically select and use the appropriate GIS tools
-- You'll see tool calls in the output (if debug=True)
-- The agent will provide a clear answer
+   - `MultiServerMCPClient` manages connection to GIS MCP server
+   - Uses `streamable_http` transport for HTTP-based communication
+   - Lazy connection: connects only when tools are requested
 
-**💡 Tip**: Watch the terminal output - you'll see the agent's "thinking" process as it decides which tools to use!
+3. **Agent**
 
----
+   - LangChain agent created with `create_agent()`
+   - Integrates LLM with MCP tools
+   - Handles tool selection and execution automatically
 
-## Step 8: Customize Your Agent
+4. **Tool Integration**
+   - Tools are automatically discovered from MCP server
+   - Converted to LangChain-compatible format
+   - Made available to the agent for execution
 
-Now that you have a working agent, let's customize it!
-
-### Change the Model
-
-Edit `my_gis_agent.py` and change the model:
+### Code Structure
 
 ```python
-# Try different models:
-MODEL_NAME = "google/gemini-pro-1.5"  # Use Gemini via OpenRouter
-# MODEL_NAME = "openai/gpt-4o"        # Use GPT-4
-# MODEL_NAME = "anthropic/claude-3.5-sonnet"  # Use Claude
+# Configuration
+- Environment variable loading
+- API key validation
+- Server URL configuration
+
+# Initialization
+- Language model setup
+- MCP client creation
+- Tool loading from server
+
+# Agent Creation
+- Agent instantiation with tools
+- System prompt configuration
+
+# Interactive Session
+- User input handling
+- Agent invocation
+- Response extraction and display
+```
+
+## Troubleshooting
+
+### "OPENROUTER_API_KEY is not set"
+
+**Solution:** Ensure the API key is set in your `.env` file or as an environment variable:
+
+```bash
+# Check if set
+echo $OPENROUTER_API_KEY  # Mac/Linux
+echo %OPENROUTER_API_KEY%  # Windows CMD
+echo $env:OPENROUTER_API_KEY  # Windows PowerShell
+```
+
+### "Failed to connect to GIS MCP server"
+
+**Symptoms:**
+
+- Connection errors when starting the agent
+- "No tools found" message
+
+**Solutions:**
+
+1. **Verify server is running:**
+
+   - Check the server terminal window
+   - Server should show: "Starting GIS MCP server with http transport on localhost:9010"
+
+2. **Check server URL:**
+
+   - Default: `http://localhost:9010/mcp`
+   - Verify port matches in both server and agent configuration
+
+3. **Test server connection:**
+
+   ```bash
+   curl http://localhost:9010/mcp/tools/list
+   ```
+
+   Should return a JSON list of available tools
+
+4. **Verify environment variables:**
+   - Server must have `GIS_MCP_TRANSPORT=http`
+   - Server must have `GIS_MCP_PORT=9010`
+
+### "No tools found"
+
+**Possible causes:**
+
+- Server not running
+- Wrong port configuration
+- Server not in HTTP transport mode
+
+**Solution:**
+
+- Restart server with correct environment variables
+- Verify server is accessible at the configured URL
+
+### Import Errors
+
+**Solution:** Install all required dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Or install individually:
+
+```bash
+pip install langchain langchain-openai langchain-core langchain-mcp-adapters python-dotenv
+```
+
+### Agent Not Using Tools
+
+**Possible reasons:**
+
+- Query doesn't require GIS operations
+- Tools not loaded successfully
+- Model not recognizing when to use tools
+
+**Solutions:**
+
+- Use more specific queries (e.g., "Calculate distance...", "Transform coordinates...")
+- Verify tools were loaded (check startup messages)
+- Try different models if tool usage is inconsistent
+
+## Customization
+
+### Change System Prompt
+
+Edit the `SYSTEM_PROMPT` constant in `my_gis_agent.py`:
+
+```python
+SYSTEM_PROMPT: str = (
+    "You are an expert geospatial analyst. "
+    "Provide detailed explanations of all calculations. "
+    "Always verify results using appropriate GIS tools."
+)
 ```
 
 ### Adjust Temperature
 
-Control how creative the agent is:
+Modify the `DEFAULT_TEMPERATURE` constant:
 
 ```python
-llm = ChatOpenAI(
-    model=MODEL_NAME,
-    api_key=OPENROUTER_API_KEY,
-    base_url="https://openrouter.ai/api/v1",
-    temperature=0.7,  # Lower = more focused, Higher = more creative (0.0-2.0)
-)
+DEFAULT_TEMPERATURE: float = 0.7  # Range: 0.0-2.0
+# Lower = more focused/deterministic
+# Higher = more creative/varied
 ```
 
-### Customize the System Prompt
+### Change Server Configuration
 
-Make your agent specialized:
+Modify the `MCP_SERVER_URL` constant:
 
 ```python
-system_prompt = """You are an expert geospatial analyst assistant.
-You specialize in coordinate transformations and spatial analysis.
-Always explain your calculations step by step.
-Use the available GIS tools to provide accurate results."""
+MCP_SERVER_URL: str = "http://localhost:9010/mcp"
 ```
 
-### Add Custom Behavior
+Ensure the server is configured to match this URL.
 
-You can add features like:
+## Dependencies
 
-- **Save conversation history**
-- **Export results to files**
-- **Add custom tools**
-- **Create a web interface**
-- **Add error handling**
+See `requirements.txt` for complete dependency list:
 
-The possibilities are endless!
+- `langchain>=1.0.0` - Agent framework
+- `langchain-openai>=1.0.0` - OpenAI-compatible API support
+- `langchain-core>=1.0.0` - Core LangChain functionality
+- `langchain-mcp-adapters>=0.1.0` - MCP server integration
+- `python-dotenv>=1.0.0` - Environment variable management
 
----
+## Documentation
 
-## Troubleshooting
-
-### "OPENROUTER_API_KEY not set"
-
-**Solution**: Make sure you set the environment variable in the same terminal where you're running the script:
-
-```powershell
-# Windows PowerShell
-$env:OPENROUTER_API_KEY="your_key"
-python my_gis_agent.py
-```
-
-### "Cannot connect to MCP server"
-
-**Symptoms**:
-
-- `Error fetching tools: ...`
-- `No tools found!`
-
-**Solutions**:
-
-1. **Check if server is running**:
-
-   - Look at your MCP server terminal - it should show it's running
-   - If not, go back to Step 3 and start it
-
-2. **Check the URL**:
-
-   - Make sure `MCP_SERVER_URL = "http://localhost:8080/mcp"` matches your server port
-   - If you changed the port, update the URL
-
-3. **Test the connection**:
-   ```bash
-   curl http://localhost:8080/mcp/tools/list
-   ```
-
-### "No tools available"
-
-**Solution**:
-
-- Make sure the MCP server is in HTTP mode (not STDIO)
-- Check that you set `GIS_MCP_TRANSPORT=http` when starting the server
-
-### Agent doesn't use tools
-
-**Possible reasons**:
-
-- The query doesn't require GIS operations
-- Try more specific queries like "Calculate distance..." or "Transform coordinates..."
-- Check that tools were loaded (you should see "Found X GIS tools!")
-
-### Import errors
-
-**Solution**: Make sure all dependencies are installed:
-
-```bash
-pip install langchain langchain-openai langchain-core httpx python-dotenv
-```
-
----
-
-## Next Steps
-
-Congratulations! You've built a working GIS agent. Here's what you can do next:
-
-### 1. Explore More Models
-
-Try different models on OpenRouter:
-
-- `google/gemini-2.0-flash-exp` - Fast Gemini model
-- `anthropic/claude-3.5-sonnet` - Great reasoning
-- `openai/gpt-4o` - Most capable
-
-### 2. Add More Features
-
-- **File I/O**: Save/load geospatial data
-- **Visualization**: Create maps with results
-- **Batch Processing**: Process multiple queries
-- **Web Interface**: Build a web UI with Flask/FastAPI
-
-### 3. Learn More
-
-- **LangChain Documentation**: [https://python.langchain.com](https://python.langchain.com)
+- **LangChain MCP Documentation**: [https://docs.langchain.com/oss/python/langchain/mcp](https://docs.langchain.com/oss/python/langchain/mcp)
+- **OpenRouter API**: [https://openrouter.ai/docs](https://openrouter.ai/docs)
 - **OpenRouter Models**: [https://openrouter.ai/models](https://openrouter.ai/models)
-- **GIS MCP Server**: Check the main project README for all available tools
-
-### 4. Share Your Agent
-
-- Add it to your portfolio
-- Share on GitHub
-- Contribute improvements back to the project
-
----
+- **GIS MCP Server**: See main project README for available tools
 
 ## Quick Reference
 
@@ -709,14 +514,14 @@ Try different models on OpenRouter:
 # Windows PowerShell
 $env:OPENROUTER_API_KEY="your_key"
 $env:GIS_MCP_TRANSPORT="http"
-$env:GIS_MCP_PORT="8080"
+$env:GIS_MCP_PORT="9010"
 ```
 
 ```bash
 # Mac/Linux
 export OPENROUTER_API_KEY="your_key"
-export GIS_MCP_TRANSPORT="http"
-export GIS_MCP_PORT="8080"
+export GIS_MCP_TRANSPORT=http
+export GIS_MCP_PORT=9010
 ```
 
 ### Common Commands
@@ -726,7 +531,7 @@ export GIS_MCP_PORT="8080"
 gis-mcp
 
 # Test server
-curl http://localhost:8080/mcp/tools/list
+curl http://localhost:9010/mcp/tools/list
 
 # Run your agent
 python my_gis_agent.py
@@ -740,28 +545,11 @@ python my_gis_agent.py
 - `openai/gpt-4o` - GPT-4
 - `anthropic/claude-3.5-sonnet` - Claude
 
----
+## Support
 
-## Summary
+For issues and questions:
 
-You've learned:
-
-✅ How to install and run the GIS MCP server  
-✅ How to get an OpenRouter API key  
-✅ How to select and use different AI models  
-✅ How to build a LangChain agent from scratch  
-✅ How to connect your agent to GIS tools  
-✅ How to customize and extend your agent
-
-**You're now ready to build amazing geospatial AI applications!** 🚀
-
----
-
-## Need Help?
-
-- **Check the troubleshooting section** above
-- **Review the code comments** in `my_gis_agent.py`
-- **Visit OpenRouter docs**: [https://openrouter.ai/docs](https://openrouter.ai/docs)
-- **Check LangChain docs**: [https://python.langchain.com](https://python.langchain.com)
-
-Happy coding! 🎉
+1. Check the troubleshooting section above
+2. Review code comments in `my_gis_agent.py`
+3. Consult LangChain and OpenRouter documentation
+4. Check GIS MCP server documentation for available tools
